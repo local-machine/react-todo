@@ -1,33 +1,37 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
 import Todos from "./components/Todos";
+import AddTodo from "./components/AddTodo";
 import Header from "./components/Layout/Header";
+import About from "./components/pages/About";
+import { v4 as uuid } from "uuid";
 
 class App extends Component {
   state = {
     todos: [
       {
-        id: 1,
+        id: uuid(),
         title: "Take out the trash",
         completed: false,
       },
       {
-        id: 2,
+        id: uuid(),
         title: "Dishes",
         completed: false,
       },
       {
-        id: 3,
+        id: uuid(),
         title: "Vacuum",
         completed: false,
       },
       {
-        id: 4,
+        id: uuid(),
         title: "Call the doctor",
         completed: true,
       },
       {
-        id: 5,
+        id: uuid(),
         title: "Participate in stand-up",
         completed: false,
       },
@@ -53,16 +57,42 @@ class App extends Component {
     });
   };
 
+  // Add Todo
+  addTodo = (title) => {
+    const newTodo = {
+      id: uuid(),
+      title,
+      completed: false,
+    };
+    this.setState({
+      todos: [...this.state.todos, newTodo],
+    });
+  };
+
   render() {
     return (
-      <div className="App">
-        <Header />
-        <Todos
-          todos={this.state.todos}
-          toggleComplete={this.toggleComplete}
-          deleteTodo={this.deleteTodo}
-        />
-      </div>
+      <Router>
+        <div className="App">
+          <div className="container">
+            <Header />
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <React.Fragment>
+                  <AddTodo addTodo={this.addTodo} />
+                  <Todos
+                    todos={this.state.todos}
+                    toggleComplete={this.toggleComplete}
+                    deleteTodo={this.deleteTodo}
+                  />
+                </React.Fragment>
+              )}
+            />
+            <Route path="/about" component={About} />
+          </div>
+        </div>
+      </Router>
     );
   }
 }
